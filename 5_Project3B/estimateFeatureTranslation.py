@@ -25,7 +25,7 @@ def estimateFeatureTranslation(startX, startY, img1, img2):
     Iy_func = RegularGridInterpolator((range(Iy.shape[0]), range(Iy.shape[1])), Iy, bounds_error = False, fill_value = None)
     It_func = RegularGridInterpolator((range(It.shape[0]), range(It.shape[1])), It, bounds_error = False, fill_value = None)
 
-    i,j = np.meshgrid(np.arange(startX-4.5,startX+4.6,1), np.arange(startY-4.5,startY+4.6,1),indexing = 'ij')
+    i,j = np.meshgrid(np.arange(startY-4.5,startY+4.6,1), np.arange(startX-4.5,startX+4.6,1),indexing = 'ij')
     window_indices = np.dstack((i,j))
     Ix_window = Ix_func(window_indices)
     Iy_window = Iy_func(window_indices)
