@@ -24,6 +24,9 @@ def estimateFeatureTranslation(startX, startY, img1, img2):
     Iy_window = Iy_func(window_indices)
     It_window = It_func(window_indices)
 
+    zero_window = np.zeros((10,10))
+    if(np.array_equal(zero_window, Ix_window) and np.array_equal(zero_window, Iy_window) and np.array_equal(zero_window, It_window)):
+        return startX, startY
     A = np.zeros((2,2))
     A[0,0] = np.sum(Ix_window*Ix_window)
     A[0,1] = np.sum(Ix_window*Iy_window)

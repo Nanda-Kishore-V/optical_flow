@@ -6,7 +6,8 @@ import scipy.misc
 
 from draw_bounding_box import draw_bounding_box
 from get_features import get_features
-from estimateFeatureTranslation import estimateFeatureTranslation
+from estimateAllTranslation import estimateAllTranslation
+from apply_geometric_transformation import apply_geometric_transformation
 
 def objectTracking(filename):
     cap = cv2.VideoCapture(filename)
@@ -20,21 +21,22 @@ def objectTracking(filename):
             img2 = frame
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             bbox = np.array([[262,124],[262,70],[308,70],[308,124]])
-            i_fps, j_fps = get_features(gray, bbox)
-            fp = [j_fps[11], i_fps[11]]
+            startYs, startXs = get_features(gray, bbox)
             continue
+        
         img1 = img2
         img2 = frame
-        gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-        gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+        
+        newXs, newYs = estimateAllTranslation(startXs, startYs, img1, img2)
+        Xs, Ys, bbox_new = apply_geometric_transformation(startXs, startYs, newXs, newYs, bbox)
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) #for color conversion
-        bbox = np.array([[262,124],[262,70],[308,70],[308,124]])
         bb_img = draw_bounding_box(bbox, frame)
-
-        newX, newY = estimateFeatureTranslation(fp[0], fp[1], gray1, gray2)
-        cv2.circle(bb_img,(newX,newY),5,(0,0,255),-1)
-        fp = (newX, newY)
+        startXs = Xs
+        startYs = Ys
+        
+        for x,y in zip(Xs, Ys):
+            cv2.circle(bb_img,(x,y),5,(0,0,255),-1)
+        
         cv2.imshow('frame', bb_img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
