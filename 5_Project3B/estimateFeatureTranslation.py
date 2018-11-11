@@ -2,6 +2,29 @@ import cv2
 from scipy import signal
 from scipy.interpolate import RegularGridInterpolator
 import numpy as np
+def GaussianPDF_1D(mu, sigma, length):
+  # create an array
+  half_len = length / 2
+
+  if np.remainder(length, 2) == 0:
+    ax = np.arange(-half_len, half_len, 1)
+  else:
+    ax = np.arange(-half_len, half_len + 1, 1)
+
+  ax = ax.reshape([-1, ax.size])
+  denominator = sigma * np.sqrt(2 * np.pi)
+  nominator = np.exp( -np.square(ax - mu) / (2 * sigma * sigma) )
+
+  return nominator / denominator
+
+def GaussianPDF_2D(mu, sigma, row, col):
+  # create row vector as 1D Gaussian pdf
+  g_row = GaussianPDF_1D(mu, sigma, row)
+  # create column vector as 1D Gaussian pdf
+  g_col = GaussianPDF_1D(mu, sigma, col).transpose()
+
+  return signal.convolve2d(g_row, g_col, 'full')
+
 def blur(img):
     return cv2.blur(img, (5,5))
 
@@ -37,7 +60,7 @@ def estimateFeatureTranslation(startX, startY, img1, img2):
     A[1,1] = np.sum(Iy_window*Iy_window)
     b = np.zeros((2,1))
     b[0,0] = -np.sum(Ix_window*It_window)
-    b[1,0] = -np.sum(Iy_window*it_window)
+    b[1,0] = -np.sum(Iy_window*It_window)
     uv = np.linalg.solve(A,b)
     newX = startX + uv[0,:]
     newY = startY + uv[1,:]
