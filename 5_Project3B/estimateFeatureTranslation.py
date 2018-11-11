@@ -2,6 +2,7 @@ import cv2
 from scipy import signal
 from scipy.interpolate import RegularGridInterpolator
 import numpy as np
+import matplotlib.pyplot as plt
 def GaussianPDF_1D(mu, sigma, length):
   # create an array
   half_len = length / 2
@@ -26,18 +27,18 @@ def GaussianPDF_2D(mu, sigma, row, col):
   return signal.convolve2d(g_row, g_col, 'full')
 
 def blur(img):
-    return cv2.blur(img, (5,5))
+    return cv2.blur(img, (15,15))
 
 def return_derivatives(img):
-    Ix = np.gradient(img, axis=0)
-    Iy = np.gradient(img, axis=1)
+    Ix = cv2.Sobel(img,cv2.CV_64F,1,0,ksize=5)
+    Iy = cv2.Sobel(img,cv2.CV_64F,0,1,ksize=5)
     return Ix, Iy
 
 def estimateFeatureTranslation(startX, startY, img1, img2):
     img1_cpy = img1.copy()
     img1_blur = blur(img1_cpy)
     img2_cpy = img2.copy()
-    img2__blur = blur(img2_cpy)
+    img2_blur = blur(img2_cpy)
     Ix, Iy = return_derivatives(img1_blur)
     It = img2-img1
     Ix_func = RegularGridInterpolator((range(Ix.shape[0]), range(Ix.shape[1])), Ix, bounds_error = False, fill_value = None)
@@ -49,6 +50,7 @@ def estimateFeatureTranslation(startX, startY, img1, img2):
     Ix_window = Ix_func(window_indices)
     Iy_window = Iy_func(window_indices)
     It_window = It_func(window_indices)
+
     A = np.zeros((2,2))
     A[0,0] = np.sum(Ix_window*Ix_window)
     A[0,1] = np.sum(Ix_window*Iy_window)
@@ -57,6 +59,7 @@ def estimateFeatureTranslation(startX, startY, img1, img2):
     b = np.zeros((2,1))
     b[0,0] = -np.sum(Ix_window*It_window)
     b[1,0] = -np.sum(Iy_window*It_window)
+
     uv = np.linalg.solve(A,b)
     newX = startX + uv[0,:]
     newY = startY + uv[1,:]
