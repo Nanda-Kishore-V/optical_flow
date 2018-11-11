@@ -18,6 +18,7 @@ def objectTracking(filename):
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             bbox = np.array([[262,124],[262,70],[308,70],[308,124]])
             i_fps, j_fps = get_features(gray, bbox)
+            fp = (j_fps[11],i_fps[11])
             continue
         img2 = img1
         img1 = frame
@@ -36,13 +37,14 @@ def objectTracking(filename):
         #bb_img[i_fps,j_fps,2] = 255
         
         
-        newX, newY = estimateFeatureTranslation(j_fps[11], i_fps[11],img1, img2)
+        newX, newY = estimateFeatureTranslation(fp[0], fp[1],img1, img2)
         newX = int(newX)
         newY = int(newY)
         #bb_img[newY, newX,0] = 0
         #bb_img[newY, newX,1] = 0
         #bb_img[newY, newX,2] = 255
         cv2.circle(bb_img,(newX,newY),5,(0,0,255),-1)
+        fp = (newX,newY)
         print(newX,newY)
         cv2.imshow('frame', bb_img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
