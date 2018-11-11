@@ -37,7 +37,7 @@ def estimateFeatureTranslation(startX, startY, img1, img2):
     A[1,1] = np.sum(Iy_window*Iy_window)
     b = np.zeros((2,1))
     b[0,0] = -np.sum(Ix_window*It_window)
-    b[1,0] = -np.sum(Iy_window*it_window)
+    b[1,0] = -np.sum(Iy_window*It_window)
     uv = np.linalg.solve(A,b)
     newX = startX + uv[0,:]
     newY = startY + uv[1,:]
