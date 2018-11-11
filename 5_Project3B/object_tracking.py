@@ -14,14 +14,14 @@ def objectTracking(filename):
     while(cap.isOpened()):
         ret, frame = cap.read()
         if img1 is None and img2 is None:
-            img1 = frame
+            img2 = frame
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             bbox = np.array([[262,124],[262,70],[308,70],[308,124]])
             i_fps, j_fps = get_features(gray, bbox)
             fp = (j_fps[11],i_fps[11])
             continue
-        img2 = img1
-        img1 = frame
+        img1 = img2
+        img2 = frame
         if ret == False:
             break
         #scipy.misc.imsave('outfile.jpg', frame) for saving individual frames
