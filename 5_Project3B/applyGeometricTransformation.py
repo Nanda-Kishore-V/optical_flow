@@ -26,10 +26,8 @@ def applyGeometricTransformation(startXs, startYs, newXs, newYs, bbox):
         newbb = newbb[[0,1],:]
         newbb = np.transpose(newbb)
         newbbox[i,:,:] = newbb
-    print(Xs)
-    print(Ys)
-    print(newbbox)
-    return 0
+    
+    return Xs, Ys, newbbox
 
 # if __name__=="__main__":
 #     applyGeometricTransformation(np.array([[1], [2], [3] ,[4]]), np.array([[5], [6], [7], [8]]),
