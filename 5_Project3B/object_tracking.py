@@ -6,6 +6,7 @@ import scipy.misc
 
 from draw_bounding_box import draw_bounding_box
 from get_features import get_features
+from estimateFeatureTranslation import estimateFeatureTranslation
 def objectTracking(filename):
     cap = cv2.VideoCapture(filename)
     img1 = None
@@ -14,6 +15,9 @@ def objectTracking(filename):
         ret, frame = cap.read()
         if img1 is None and img2 is None:
             img1 = frame
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            bbox = np.array([[262,124],[262,70],[308,70],[308,124]])
+            i_fps, j_fps = get_features(gray, bbox)
             continue
         img2 = img1
         img1 = frame
@@ -26,20 +30,21 @@ def objectTracking(filename):
         #corner_shi_tomasi(frame)
         bbox = np.array([[262,124],[262,70],[308,70],[308,124]])
         bb_img = draw_bounding_box(bbox, frame)
-        i_fps, j_fps = get_features(gray, bbox)
-        bb_img[i_fps,j_fps,0] = 0
-        bb_img[i_fps,j_fps,1] = 0
-        bb_img[i_fps,j_fps,2] = 255
-        #for x,y in zip(x_fps,y_fps):
-            #bb_img[x,y,0] = 0
-            #bb_img[x,y,1] = 0
-            #bb_img[x,y,2] =  255
-        cv2.imshow('frame', bb_img)
-        newX, newY = estimateFeatureTranslation(j_fps[11], i_fps[11],img1, img2)
-        bb_img[newY, newX,0] = 0
-        bb_img[newY, newX,1] = 0
-        bb_img[newY, newX,2] = 255
         
+        #bb_img[i_fps,j_fps,0] = 0
+        #bb_img[i_fps,j_fps,1] = 0
+        #bb_img[i_fps,j_fps,2] = 255
+        
+        
+        newX, newY = estimateFeatureTranslation(j_fps[11], i_fps[11],img1, img2)
+        newX = int(newX)
+        newY = int(newY)
+        #bb_img[newY, newX,0] = 0
+        #bb_img[newY, newX,1] = 0
+        #bb_img[newY, newX,2] = 255
+        cv2.circle(bb_img,(newX,newY),5,(0,0,255),-1)
+        print(newX,newY)
+        cv2.imshow('frame', bb_img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cap.release()

@@ -29,12 +29,8 @@ def blur(img):
     return cv2.blur(img, (5,5))
 
 def return_derivatives(img):
-    gaussianKernel = GaussianPDF_2D(0,1,7,7)
-    dx = np.array([1,-1]).reshape(1,2)
-    Gx = signal.convolve2d(gaussianKernel, dx, mode = 'same')
-    Gy = signal.convolve2d(gaussianKernel, dy, mode = 'same')
-    Ix = signal.convolve2d(I_gray, Gx, mode = 'same')
-    Iy = signal.convolve2d(I_gray, Gy, mode = 'same')
+    Ix = np.gradient(img, axis=0)
+    Iy = np.gradient(img, axis=1)
     return Ix, Iy
 
 def estimateFeatureTranslation(startX, startY, img1, img2):
