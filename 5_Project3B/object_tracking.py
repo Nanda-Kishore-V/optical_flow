@@ -23,22 +23,24 @@ def objectTracking(filename):
             bbox = np.array([[262,124],[262,70],[308,70],[308,124]])
             startYs, startXs = get_features(gray, bbox)
             continue
-        
+
         img1 = img2
         img2 = frame
         bboxs = np.empty((1,4,2)) #hardcoded 1
-        bboxs[0] = bbox 
+        bboxs[0] = bbox
         newXs, newYs = estimateAllTranslation(startXs, startYs, img1, img2)
         Xs, Ys, bbox_new = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
 
         bb_img = draw_bounding_box(bbox_new[0], frame)
-        startXs = Xs
-        startYs = Ys
         Xs = np.reshape((Xs[Xs != -1]),(-1,1))
         Ys = np.reshape((Ys[Ys != -1]),(-1,1))
-
+        startXs = Xs
+        startYs = Ys
+        print(Xs)
+        print(Ys)
+        
         for idx, (x,y) in enumerate(zip(Xs, Ys)):
-            cv2.circle(bb_img,(x,y),5,(0,0,255),-1)
+            cv2.circle(bb_img,(x,y),3,(0,0,255),-1)
 
         cv2.imshow('frame', bb_img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
