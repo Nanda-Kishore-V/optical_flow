@@ -4,6 +4,8 @@ import os
 import numpy as np
 import scipy.misc
 
+from matplotlib import pyplot as plt
+
 from draw_bounding_box import draw_bounding_box
 from get_features import get_features
 from estimateFeatureTranslation import estimateFeatureTranslation
@@ -33,4 +35,11 @@ def objectTracking():
     print(newX, newY)
 
 if __name__ == "__main__":
-    objectTracking()
+    cap = cv2.VideoCapture('videos/Medium.mp4')
+    while(cap.isOpened()):
+        ret, frame = cap.read()
+        plt.imshow(np.array(frame))
+        plt.show()
+        cv2.imwrite('medium_first_frame.jpg',frame)
+        break
+    cap.release()

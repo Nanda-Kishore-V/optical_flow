@@ -19,15 +19,19 @@ def objectTracking(filename):
             break
         if img1 is None and img2 is None:
             img2 = frame
+            img2 = cv2.GaussianBlur(img2, (7,7), 0)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            bbox = np.array([[262,124],[262,70],[308,70],[308,124]])
-            startYs, startXs = get_features(gray, bbox)
+            bboxs = np.empty((2,4,2)) #hardcoded 1
+            # bboxs[0] = np.array([[315, 192],[373,192],[380,244],[309,241]])
+            # bboxs[0] = np.array([[262,124],[262,70],[308,70],[308,124]])
+            bboxs[0] = np.array([[462,216],[500,216],[500,240],[462,240]])
+            # for bbox in bbox:
+            startYs, startXs = get_features(gray, bboxs[0])
             continue
 
         img1 = img2
         img2 = frame
-        bboxs = np.empty((1,4,2)) #hardcoded 1
-        bboxs[0] = bbox
+        img2 = cv2.GaussianBlur(img2, (7,7), 0)
         newXs, newYs = estimateAllTranslation(startXs, startYs, img1, img2)
         Xs, Ys, bbox_new = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
 
@@ -36,9 +40,7 @@ def objectTracking(filename):
         Ys = np.reshape((Ys[Ys != -1]),(-1,1))
         startXs = Xs
         startYs = Ys
-        print(Xs)
-        print(Ys)
-        
+
         for idx, (x,y) in enumerate(zip(Xs, Ys)):
             cv2.circle(bb_img,(x,y),3,(0,0,255),-1)
 
@@ -53,4 +55,4 @@ if __name__ == "__main__":
     # for file in os.listdir(videos_dir):
     #     test_video = os.fsdecode(file)
     #     objectTracking('videos/'+ test_video)
-    objectTracking('videos/Easy.mp4')
+    objectTracking('videos/Medium.mp4')

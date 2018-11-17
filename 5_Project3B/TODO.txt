@@ -1,0 +1,4 @@
+Things to do:
+1. Feature detection - more than one bbox must be taken as input
+2. estimateAllTranslation - use dstack instead of zip because startXs and startYs are NxF
+3. applyGeometricTransformation - use RANSAC to correct the SimilarityTransform
