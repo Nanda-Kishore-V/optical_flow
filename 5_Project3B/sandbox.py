@@ -35,11 +35,11 @@ def objectTracking():
     print(newX, newY)
 
 if __name__ == "__main__":
-    cap = cv2.VideoCapture('videos/Medium.mp4')
+    cap = cv2.VideoCapture('videos/hard.mp4')
     while(cap.isOpened()):
         ret, frame = cap.read()
         plt.imshow(np.array(frame))
         plt.show()
-        cv2.imwrite('medium_first_frame.jpg',frame)
+        cv2.imwrite('hard_first_frame.jpg',frame)
         break
     cap.release()
