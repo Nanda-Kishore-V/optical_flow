@@ -25,31 +25,33 @@ def objectTracking(filename):
             # bboxs[0] = np.array([[315, 192],[373,192],[380,244],[309,241]])
             # bboxs[0] = np.array([[262,124],[262,70],[308,70],[308,124]])
             bboxs[0] = np.array([[223,166],[275,166],[275,124],[223,124]])
+            bboxs[1] = np.array([[290,264],[390,264],[290,188],[390,188]])
             # for bbox in bbox:
-            startYs, startXs = get_features(gray, bboxs[0])
+            startYs, startXs = get_features(gray, bboxs)
             continue
-        try:
-            img1 = img2
-            img2 = frame
-            img2 = cv2.GaussianBlur(img2, (7,7), 0)
-            newXs, newYs = estimateAllTranslation(startXs, startYs, img1, img2)
-            Xs, Ys, bboxs = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
-            bb_img = draw_bounding_box(bboxs, frame)
-            Xs = np.reshape((Xs[Xs != -1]),(-1,1))
-            Ys = np.reshape((Ys[Ys != -1]),(-1,1))
-            startXs = Xs
-            startYs = Ys
+        #try:
+        img1 = img2
+        img2 = frame
+        img2 = cv2.GaussianBlur(img2, (7,7), 0)
+        newXs, newYs = estimateAllTranslation(startXs, startYs, img1, img2)
+        Xs, Ys, bboxs = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
+        for bbox in bboxs:
+            bb_img = draw_bounding_box(bbox, frame)
+        Xs = np.reshape((Xs[Xs != -1]),(-1,1))
+        Ys = np.reshape((Ys[Ys != -1]),(-1,1))
+        startXs = Xs
+        startYs = Ys
 
-            for idx, (x,y) in enumerate(zip(Xs, Ys)):
-                cv2.circle(bb_img,(x,y),3,(0,0,255),-1)
+        for idx, (x,y) in enumerate(zip(Xs, Ys)):
+            cv2.circle(bb_img,(x,y),3,(0,0,255),-1)
 
-            cv2.imshow('frame', bb_img)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-        except:
+        cv2.imshow('frame', bb_img)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+        #except:
             #A check for Geometric Transform
-            print('Something wrong')
-            continue
+            #print('Something wrong')
+            #continue
 
 
     cap.release()

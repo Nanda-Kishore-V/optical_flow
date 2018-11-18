@@ -15,13 +15,34 @@
 import numpy as np
 from skimage.feature import corner_shi_tomasi,corner_peaks
 
-def get_features(img,bbox):
+def get_features(img,bboxs):
     #harris corner detect from skimage
-    roi_start = (int(np.min(bbox[:,0])),int(np.min(bbox[:,1])))
-    roi_w = int(np.max(bbox[:,0]) - np.min(bbox[:,0]))
-    roi_h = int(np.max(bbox[:,1]) - np.min(bbox[:,1]))
-    roi = img[roi_start[1]:roi_start[1]+roi_h, roi_start[0]:roi_start[0]+roi_w]
-    fps = corner_peaks(corner_shi_tomasi(roi), min_distance=1)
-    i = np.reshape(fps[:,0] + roi_start[1],(-1,1))
-    j = np.reshape(fps[:,1] + roi_start[0],(-1,1))
-    return i,j
+    i_vec = np.empty((0,0))
+    j_vec = np.empty((0,0))
+    for idx,bbox in enumerate(bboxs):
+        roi_start = (int(np.min(bbox[:,0])),int(np.min(bbox[:,1])))
+        roi_w = int(np.max(bbox[:,0]) - np.min(bbox[:,0]))
+        roi_h = int(np.max(bbox[:,1]) - np.min(bbox[:,1]))
+        roi = img[roi_start[1]:roi_start[1]+roi_h, roi_start[0]:roi_start[0]+roi_w]
+        fps = corner_peaks(corner_shi_tomasi(roi), min_distance=1)
+        i = np.reshape(fps[:,0] + roi_start[1],(-1,1))
+        j = np.reshape(fps[:,1] + roi_start[0],(-1,1))
+        if(i_vec.size == 0):
+            i_vec = np.resize(i_vec, (i.shape[0],i_vec.shape[1]))
+            j_vec = np.resize(j_vec, (j.shape[0],j_vec.shape[1]))
+            i_vec = np.append(i_vec,i,axis=1)
+            j_vec = np.append(j_vec,j,axis=1)
+        elif(i_vec.shape[0] < i.shape[0]):
+            i_vec = np.pad(i_vec.T, ((0,0),(0,i.shape[0]-i_vec.shape[0])), 'constant', constant_values=(-1)).T
+            j_vec = np.pad(j_vec.T, ((0,0),(0,j.shape[0]-j_vec.shape[0])), 'constant', constant_values=(-1)).T
+            i_vec = np.append(i_vec,i,axis=1)
+            j_vec = np.append(j_vec,j,axis=1)
+        else:
+            i = np.pad(i.T, ((0,0),(0,i_vec.shape[0]-i.shape[0])),'constant',constant_values=(-1)).T
+            j = np.pad(j.T, ((0,0),(0,j_vec.shape[0]-j.shape[0])),'constant',constant_values=(-1)).T
+            i_vec = np.append(i_vec,i,axis=1)
+            j_vec = np.append(j_vec,j,axis=1)
+        #i_vec.append(i)#(i_vec, i, axis=0)
+        #j_vec.append(j)#np.append(j_vec, j, axis=0)
+
+    return i_vec,j_vec

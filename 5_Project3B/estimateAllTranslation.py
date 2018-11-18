@@ -16,11 +16,12 @@ def return_derivatives(img):
 def estimateAllTranslation(startXs, startYs, img1, img2):
     newXs = np.empty_like(startXs)
     newYs = np.empty_like(startYs)
-    for idx, (startX, startY) in enumerate(zip(startXs, startYs)):
-        gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-        gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-        Ix, Iy = return_derivatives(gray1)
-        newX, newY = estimateFeatureTranslation(startX[0], startY[0], Ix, Iy, gray1, gray2)
-        newXs[idx] = newX
-        newYs[idx] = newY
+    for idx1, (colX, colY) in enumerate(zip(startXs.T, startYs.T)):
+        for idx2, (startX, startY) in enumerate(zip(colX, colY)):
+            gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+            gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+            Ix, Iy = return_derivatives(gray1)
+            newX, newY = estimateFeatureTranslation(startX, startY, Ix, Iy, gray1, gray2)
+            newXs[idx2,idx1] = newX
+            newYs[idx2,idx1] = newY
     return newXs, newYs
