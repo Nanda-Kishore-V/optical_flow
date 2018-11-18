@@ -24,7 +24,7 @@ def objectTracking(filename):
             bboxs = np.empty((2,4,2)) #hardcoded 1
             # bboxs[0] = np.array([[315, 192],[373,192],[380,244],[309,241]])
             # bboxs[0] = np.array([[262,124],[262,70],[308,70],[308,124]])
-            bboxs[0] = np.array([[462,216],[500,216],[500,240],[462,240]])
+            bboxs[0] = np.array([[290,264],[390,264],[290,188],[390,188]])
             # for bbox in bbox:
             startYs, startXs = get_features(gray, bboxs[0])
             continue
@@ -33,9 +33,9 @@ def objectTracking(filename):
         img2 = frame
         img2 = cv2.GaussianBlur(img2, (7,7), 0)
         newXs, newYs = estimateAllTranslation(startXs, startYs, img1, img2)
-        Xs, Ys, bbox_new = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
+        Xs, Ys, bboxs = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
 
-        bb_img = draw_bounding_box(bbox_new[0], frame)
+        bb_img = draw_bounding_box(bboxs, frame)
         Xs = np.reshape((Xs[Xs != -1]),(-1,1))
         Ys = np.reshape((Ys[Ys != -1]),(-1,1))
         startXs = Xs
@@ -55,4 +55,4 @@ if __name__ == "__main__":
     # for file in os.listdir(videos_dir):
     #     test_video = os.fsdecode(file)
     #     objectTracking('videos/'+ test_video)
-    objectTracking('videos/Medium.mp4')
+    objectTracking('videos/Easy.mp4')
