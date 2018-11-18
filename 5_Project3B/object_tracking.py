@@ -34,8 +34,6 @@ def objectTracking(filename):
             img2 = cv2.GaussianBlur(img2, (7,7), 0)
             newXs, newYs = estimateAllTranslation(startXs, startYs, img1, img2)
             Xs, Ys, bboxs = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
-            #bboxs[bboxs[:,:,0]>=frame.shape[1]] = frame.shape[1]-1
-            #bboxs[bboxs[:,:,1]>=frame.shape[0]] = frame.shape[0]-1
             bb_img = draw_bounding_box(bboxs, frame)
             Xs = np.reshape((Xs[Xs != -1]),(-1,1))
             Ys = np.reshape((Ys[Ys != -1]),(-1,1))
@@ -49,6 +47,7 @@ def objectTracking(filename):
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         except:
+            #A check for Geometric Transform
             print('Something wrong')
             continue
 
