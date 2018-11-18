@@ -26,9 +26,6 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
         It_window = img2_func(shifted_window_indices)-img1_func(window_indices)
 
         zero_window = np.zeros((10,10))
-        if(np.array_equal(zero_window, Ix_window) and np.array_equal(zero_window, Iy_window)):
-            print("bad case")
-            return startX, startY
         A = np.zeros((2,2))
         A[0,0] = np.sum(Ix_window*Ix_window)
         A[0,1] = np.sum(Ix_window*Iy_window)
@@ -37,7 +34,16 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
         b = np.zeros((2,1))
         b[0,0] = -np.sum(Ix_window*It_window)
         b[1,0] = -np.sum(Iy_window*It_window)
-        uv = np.linalg.solve(A,b)
+        try:
+            uv = np.linalg.solve(A,b)
+            #uv = np.dot(np.dot(np.linalg.inv(np.dot(A.T,A)),A.T),b)
+        except:
+            if newX>=img1.shape[1]:
+                newX = img1.shape[1]-1
+            if newY>=img1.shape[0]:
+                newY = img1.shape[0]-1
+            print(newX, newY)
+            break
         newX = newX + uv[0,:]
         newY = newY + uv[1,:]
         if np.allclose(uv, np.array([[0],[0]]), rtol=0.05, atol = 0.05):
