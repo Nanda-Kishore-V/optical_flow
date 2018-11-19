@@ -2,7 +2,7 @@ import cv2
 import os
 
 import numpy as np
-import scipy.misc
+import skvideo.io
 
 from draw_bounding_box import draw_bounding_box
 from get_features import get_features
@@ -13,10 +13,11 @@ def objectTracking(filename):
     cap = cv2.VideoCapture(filename)
     img1 = None
     img2 = None
+    writer = skvideo.io.FFmpegWriter('Easy_output.avi')
     while(cap.isOpened()):
         ret, frame = cap.read()
         if not ret:
-            break
+            break 
         if img1 is None and img2 is None:
             img2 = frame
             img2 = cv2.GaussianBlur(img2, (7,7), 0)
@@ -26,7 +27,8 @@ def objectTracking(filename):
             # bboxs[0] = np.array([[262,124],[262,70],[308,70],[308,124]])
             bboxs[0] = np.array([[223,166],[275,166],[275,124],[223,124]])
             bboxs[1] = np.array([[290,264],[390,264],[290,188],[390,188]])
-            bboxs[2] = np.array([[264,122],[300,122],[264,81],[300,81]])
+            # bboxs[2] = np.array([[264,122],[300,122],[264,81],[300,81]])
+            bboxs[2] = np.array([[150, 233], [190, 233], [190, 167], [150, 167]])
             # for bbox in bbox:
             startYs, startXs = get_features(gray, bboxs)
             continue
@@ -39,11 +41,10 @@ def objectTracking(filename):
 
         bb_img = frame
         delete_mask = np.ones(bboxs.shape[0], dtype=bool)
-        print(startXs)
-        print('------------------------------')
         for idx, bbox in enumerate(bboxs):
-            startXs[:,idx][startXs[:,idx] >= frame.shape[1]] = -1
-            startYs[:,idx][startYs[:,idx] >= frame.shape[0]] = -1
+            mask = np.logical_or(startXs[:,idx] >= frame.shape[1],  startYs[:, idx] >= frame.shape[0])
+            startXs[:,idx][mask] = -1
+            startYs[:,idx][mask] = -1
             if (startXs[:, idx] < 0).all() and (startYs[:, idx] < 0).all():
                 delete_mask[idx] = False
                 continue
@@ -60,6 +61,7 @@ def objectTracking(filename):
                 if x[ind]>=0 and y[ind]>=0:
                     cv2.circle(bb_img,(np.int32(x[ind]),np.int32(y[ind])),3,(0,0,255),-1)
 
+        writer.writeFrame(bb_img[:, :, [2,1,0]])
         cv2.imshow('frame', bb_img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -68,7 +70,7 @@ def objectTracking(filename):
             #print('Something wrong')
             #continue
 
-
+    writer.close()
     cap.release()
     cv2.destroyAllWindows()
 

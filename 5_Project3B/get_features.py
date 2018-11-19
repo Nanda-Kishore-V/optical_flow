@@ -24,7 +24,7 @@ def get_features(img,bboxs):
         roi_w = int(np.max(bbox[:,0]) - np.min(bbox[:,0]))
         roi_h = int(np.max(bbox[:,1]) - np.min(bbox[:,1]))
         roi = img[roi_start[1]:roi_start[1]+roi_h, roi_start[0]:roi_start[0]+roi_w]
-        fps = corner_peaks(corner_shi_tomasi(roi), min_distance=1)
+        fps = corner_peaks(corner_shi_tomasi(roi), min_distance=1, num_peaks=50)
         i = np.reshape(fps[:,0] + roi_start[1],(-1,1))
         j = np.reshape(fps[:,1] + roi_start[0],(-1,1))
         if(i_vec.size == 0):
