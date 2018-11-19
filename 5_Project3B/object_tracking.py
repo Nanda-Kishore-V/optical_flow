@@ -38,9 +38,20 @@ def objectTracking(filename):
         startXs, startYs, bboxs = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
 
         bb_img = frame
-        for bbox in bboxs:
+        delete_mask = np.ones(bboxs.shape[0], dtype=bool)
+        print(startXs)
+        print('------------------------------')
+        for idx, bbox in enumerate(bboxs):
+            if (startXs[:, idx] < 0).all():
+                delete_mask[idx] = False
+                continue 
             bb_img = draw_bounding_box(bbox, bb_img)
         
+        print(delete_mask)
+        bboxs = bboxs[delete_mask,:,:]
+        
+        
+
         for idx, (x,y) in enumerate(zip(startXs, startYs)):
             for ind in range(bboxs.shape[0]):
                 if x[ind]>=0 and y[ind]>=0:

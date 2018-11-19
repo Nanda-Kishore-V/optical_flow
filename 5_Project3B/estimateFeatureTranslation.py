@@ -39,9 +39,9 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
             #uv = np.dot(np.dot(np.linalg.inv(np.dot(A.T,A)),A.T),b)
         except:
             if newX>=img1.shape[1]:
-                newX = img1.shape[1]-1
+                newX = startX
             if newY>=img1.shape[0]:
-                newY = img1.shape[0]-1
+                newY = startY 
             print(newX, newY)
             break
         newX = newX + uv[0,:]

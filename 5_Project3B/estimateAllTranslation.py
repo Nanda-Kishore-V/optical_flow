@@ -21,7 +21,7 @@ def estimateAllTranslation(startXs, startYs, img1, img2):
             gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
             gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
             Ix, Iy = return_derivatives(gray1)
-            if startX != -1 and startY != -1:
+            if startX >= 0 and startY >= 0:
                 newX, newY = estimateFeatureTranslation(startX, startY, Ix, Iy, gray1, gray2)
                 newXs[idx2,idx1] = newX
                 newYs[idx2,idx1] = newY 
