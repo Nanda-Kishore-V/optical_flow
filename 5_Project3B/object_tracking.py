@@ -13,7 +13,8 @@ def objectTracking(filename):
     cap = cv2.VideoCapture(filename)
     img1 = None
     img2 = None
-    writer = skvideo.io.FFmpegWriter('Easy_output.avi')
+    writer = skvideo.io.FFmpegWriter('Easy_output2.avi')
+    bboxs = np.load('easy.npy')
     while(cap.isOpened()):
         ret, frame = cap.read()
         if not ret:
@@ -22,14 +23,6 @@ def objectTracking(filename):
             img2 = frame
             img2 = cv2.GaussianBlur(img2, (7,7), 0)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            bboxs = np.empty((3,4,2)) #hardcoded 1
-            # bboxs[0] = np.array([[315, 192],[373,192],[380,244],[309,241]])
-            # bboxs[0] = np.array([[262,124],[262,70],[308,70],[308,124]])
-            bboxs[0] = np.array([[223,166],[275,166],[275,124],[223,124]])
-            bboxs[1] = np.array([[290,264],[390,264],[290,188],[390,188]])
-            # bboxs[2] = np.array([[264,122],[300,122],[264,81],[300,81]])
-            bboxs[2] = np.array([[150, 233], [190, 233], [190, 167], [150, 167]])
-            # for bbox in bbox:
             startYs, startXs = get_features(gray, bboxs)
             continue
         #try:
