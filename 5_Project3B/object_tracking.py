@@ -41,7 +41,7 @@ def objectTracking(filename):
         for bbox in bboxs:
             bb_img = draw_bounding_box(bbox, bb_img)
         
-        for idx, (x,y) in enumerate(zip(Xs, Ys)):
+        for idx, (x,y) in enumerate(zip(startXs, startYs)):
             for ind in range(bboxs.shape[0]):
                 if x[ind]>=0 and y[ind]>=0:
                     cv2.circle(bb_img,(np.int32(x[ind]),np.int32(y[ind])),3,(0,0,255),-1)
