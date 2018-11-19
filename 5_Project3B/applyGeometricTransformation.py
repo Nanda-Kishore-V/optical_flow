@@ -7,11 +7,13 @@ def applyGeometricTransformation(startXs, startYs, newXs, newYs, bbox):
     # NOTE: The input arrays must be atleast 2D
     N = startXs.shape[0]
     F = startXs.shape[1]
+    print(N)
+    print(F)
     Xs = np.empty((N, F))
     Ys = np.empty((N, F))
     newbbox = np.empty((F, 4, 2))
     for i in range(F):
-        Xs[:,i], Ys[:,i   ], newbbox[i,:,:] = ransac(startXs[:,i], startYs[:,i], newXs[:,i], newYs[:,i], bbox[i,:])
+        Xs[:,i], Ys[:,i], newbbox[i,:,:] = ransac(startXs[:,i], startYs[:,i], newXs[:,i], newYs[:,i], bbox[i,:])
         '''
         old code - remove later
         '''
@@ -32,6 +34,7 @@ def applyGeometricTransformation(startXs, startYs, newXs, newYs, bbox):
         # newbb = newbb[[0,1],:]
         # newbb = np.transpose(newbb)
         # newbbox[i,:,:] = newbb
+    print(newbbox)
 
     return Xs, Ys, newbbox
 

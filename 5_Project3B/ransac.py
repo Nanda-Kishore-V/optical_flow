@@ -31,11 +31,11 @@ def ransac(startXs, startYs, newXs, newYs, bbox):
         Ys = new_coords[1,:]
 
         errors = np.sqrt(np.sum((np.transpose(dst) - np.block([[Xs], [Ys]]))**2, axis=0))
-        if np.isnan(errors).any():
-            print(indices)
-            print(src_i)
-            print(dst_i)
-            print(errors)
+        # if np.isnan(errors).any():
+            # print(indices)
+            # print(src_i)
+            # print(dst_i)
+            # print(errors)
         inliers = errors[errors < thresh].size
         if max_inliers < inliers:
             max_inliers = inliers

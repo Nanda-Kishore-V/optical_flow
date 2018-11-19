@@ -34,16 +34,14 @@ def objectTracking(filename):
         img2 = frame
         img2 = cv2.GaussianBlur(img2, (7,7), 0)
         newXs, newYs = estimateAllTranslation(startXs, startYs, img1, img2)
-        Xs, Ys, bboxs = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
-        for bbox in bboxs:
-            bb_img = draw_bounding_box(bbox, frame)
-        Xs = np.reshape((Xs[Xs != -1]),(-1,1))
-        Ys = np.reshape((Ys[Ys != -1]),(-1,1))
-        startXs = Xs
-        startYs = Ys
+        startXs, startYs, bboxs = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
 
-        for idx, (x,y) in enumerate(zip(Xs, Ys)):
-            cv2.circle(bb_img,(x,y),3,(0,0,255),-1)
+        bb_img = frame
+        for bbox in bboxs:
+            bb_img = draw_bounding_box(bbox, bb_img)
+
+        # for idx, (x,y) in enumerate(zip(Xs, Ys)):
+            # cv2.circle(bb_img,(x,y),3,(0,0,255),-1)
 
         cv2.imshow('frame', bb_img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
