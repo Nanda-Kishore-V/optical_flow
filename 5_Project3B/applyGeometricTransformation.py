@@ -32,7 +32,8 @@ def applyGeometricTransformation(startXs, startYs, newXs, newYs, bbox):
         # newbb = newbb[[0,1],:]
         # newbb = np.transpose(newbb)
         # newbbox[i,:,:] = newbb
-
+    #print(Xs.shape)
+    #print(Ys.shape)
     return Xs, Ys, newbbox
 
 # if __name__=="__main__":

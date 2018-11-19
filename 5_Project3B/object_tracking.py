@@ -21,11 +21,12 @@ def objectTracking(filename):
             img2 = frame
             img2 = cv2.GaussianBlur(img2, (7,7), 0)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            bboxs = np.empty((2,4,2)) #hardcoded 1
+            bboxs = np.empty((3,4,2)) #hardcoded 1
             # bboxs[0] = np.array([[315, 192],[373,192],[380,244],[309,241]])
             # bboxs[0] = np.array([[262,124],[262,70],[308,70],[308,124]])
             bboxs[0] = np.array([[223,166],[275,166],[275,124],[223,124]])
             bboxs[1] = np.array([[290,264],[390,264],[290,188],[390,188]])
+            bboxs[2] = np.array([[264,122],[300,122],[264,81],[300,81]])
             # for bbox in bbox:
             startYs, startXs = get_features(gray, bboxs)
             continue
@@ -35,15 +36,20 @@ def objectTracking(filename):
         img2 = cv2.GaussianBlur(img2, (7,7), 0)
         newXs, newYs = estimateAllTranslation(startXs, startYs, img1, img2)
         Xs, Ys, bboxs = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
+        bb_img = frame
         for bbox in bboxs:
-            bb_img = draw_bounding_box(bbox, frame)
-        Xs = np.reshape((Xs[Xs != -1]),(-1,1))
-        Ys = np.reshape((Ys[Ys != -1]),(-1,1))
+            bb_img = draw_bounding_box(bbox, bb_img)
+        #Xs = np.reshape((Xs[Xs != -1]),(-1,bboxs.shape[0]))
+        #Ys = np.reshape((Ys[Ys != -1]),(-1,bboxs.shape[0]))
+        #print(Xs.shape)
+        #print(Ys.shape)
         startXs = Xs
         startYs = Ys
-
+        #cv2.circle(bb_img,(277.33,233.22),3,(0,0,255),-1)
         for idx, (x,y) in enumerate(zip(Xs, Ys)):
-            cv2.circle(bb_img,(x,y),3,(0,0,255),-1)
+            for ind in range(bboxs.shape[0]):
+                if x[ind]>=0 and y[ind]>=0:
+                    cv2.circle(bb_img,(np.int32(x[ind]),np.int32(y[ind])),3,(0,0,255),-1)
 
         cv2.imshow('frame', bb_img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
