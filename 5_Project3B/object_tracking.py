@@ -39,7 +39,7 @@ def objectTracking(filename):
         bb_img = frame
         delete_mask = np.ones(bboxs.shape[0], dtype=bool)
         for idx, bbox in enumerate(bboxs):
-            mask = np.logical_or(startXs[:,idx]>= frame.shape[1]],startYs[:,idx]>= frame.shape[0]])
+            mask = np.logical_or(startXs[:,idx]>= frame.shape[1],startYs[:,idx]>= frame.shape[0])
             startXs[:,idx][mask] = -1
             startYs[:,idx][mask] = -1
             if (startXs[:, idx] < 0).all() and (startYs[:, idx] < 0).all():
