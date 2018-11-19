@@ -42,15 +42,18 @@ def objectTracking(filename):
         print(startXs)
         print('------------------------------')
         for idx, bbox in enumerate(bboxs):
-            if (startXs[:, idx] < 0).all():
+            startXs[:,idx][startXs[:,idx] >= frame.shape[1]] = -1
+            startYs[:,idx][startYs[:,idx] >= frame.shape[0]] = -1
+            if (startXs[:, idx] < 0).all() and (startYs[:, idx] < 0).all():
                 delete_mask[idx] = False
-                continue 
+                continue
             bb_img = draw_bounding_box(bbox, bb_img)
-        
+
         print(delete_mask)
         bboxs = bboxs[delete_mask,:,:]
-        
-        
+        startXs = startXs[:,delete_mask]
+        startYs = startYs[:,delete_mask]
+
 
         for idx, (x,y) in enumerate(zip(startXs, startYs)):
             for ind in range(bboxs.shape[0]):
