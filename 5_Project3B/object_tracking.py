@@ -67,7 +67,6 @@ def objectTracking(filename):
         cv2.imshow('frame', bb_img)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        iterations+=1
     writer.close()
     cap.release()
     cv2.destroyAllWindows()
