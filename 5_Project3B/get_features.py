@@ -16,7 +16,6 @@ import numpy as np
 from skimage.feature import corner_shi_tomasi,corner_peaks
 
 def get_features(img,bboxs):
-    #harris corner detect from skimage
     i_vec = np.empty((0,0))
     j_vec = np.empty((0,0))
     for idx,bbox in enumerate(bboxs):
@@ -42,7 +41,4 @@ def get_features(img,bboxs):
             j = np.pad(j.T, ((0,0),(0,j_vec.shape[0]-j.shape[0])),'constant',constant_values=(-1)).T
             i_vec = np.append(i_vec,i,axis=1)
             j_vec = np.append(j_vec,j,axis=1)
-        #i_vec.append(i)#(i_vec, i, axis=0)
-        #j_vec.append(j)#np.append(j_vec, j, axis=0)
-
     return i_vec,j_vec

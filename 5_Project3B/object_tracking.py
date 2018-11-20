@@ -66,8 +66,4 @@ def objectTracking(filename):
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    # videos_dir = os.fsencode('videos')
-    # for file in os.listdir(videos_dir):
-    #     test_video = os.fsdecode(file)
-    #     objectTracking('videos/'+ test_video)
     objectTracking('videos/Easy.mp4')
