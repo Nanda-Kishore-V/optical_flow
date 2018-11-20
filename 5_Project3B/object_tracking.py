@@ -13,8 +13,8 @@ def objectTracking(filename):
     cap = cv2.VideoCapture(filename)
     img1 = None
     img2 = None
-    bboxs = np.load('medium.npy')
-    writer = skvideo.io.FFmpegWriter('Medium.avi')
+    bboxs = np.load('easy.npy')
+    writer = skvideo.io.FFmpegWriter('Easy.avi')
     iterations = 1
     while(cap.isOpened()):
         ret, frame = cap.read()
@@ -70,4 +70,4 @@ if __name__ == "__main__":
     # for file in os.listdir(videos_dir):
     #     test_video = os.fsdecode(file)
     #     objectTracking('videos/'+ test_video)
-    objectTracking('videos/Medium.mp4')
+    objectTracking('videos/Easy.mp4')
