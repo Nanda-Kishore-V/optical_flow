@@ -5,8 +5,6 @@ from scipy import signal
 from estimateFeatureTranslation import estimateFeatureTranslation
 
 def return_derivatives(img):
-    # Ix = cv2.Sobel(img,cv2.CV_64F,1,0,ksize=5)
-    # Iy = cv2.Sobel(img,cv2.CV_64F,0,1,ksize=5)
     dx = np.array([1, -1]).reshape(1,-1)
     dy = np.array([1, -1]).reshape(-1,1)
     Ix = signal.convolve2d(img, dx)
@@ -24,7 +22,7 @@ def estimateAllTranslation(startXs, startYs, img1, img2):
             if startX >= 0 and startY >= 0:
                 newX, newY = estimateFeatureTranslation(startX, startY, Ix, Iy, gray1, gray2)
                 newXs[idx2,idx1] = newX
-                newYs[idx2,idx1] = newY 
+                newYs[idx2,idx1] = newY
             else:
                 newXs[idx2, idx1] = -1
                 newYs[idx2, idx1] = -1

@@ -36,7 +36,6 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
         b[1,0] = -np.sum(Iy_window*It_window)
         try:
             uv = np.linalg.solve(A,b)
-            #uv = np.dot(np.dot(np.linalg.inv(np.dot(A.T,A)),A.T),b)
         except:
             break
         newX = newX + uv[0,:]

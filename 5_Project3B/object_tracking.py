@@ -13,8 +13,8 @@ def objectTracking(filename):
     cap = cv2.VideoCapture(filename)
     img1 = None
     img2 = None
-    writer = skvideo.io.FFmpegWriter('medium_output2.avi')
-    bboxs = np.load('medium.npy')
+    writer = skvideo.io.FFmpegWriter('Easy.avi')
+    bboxs = np.load('easy.npy')
     frame_num = 0
     while(cap.isOpened()):
         frame_num += 1
@@ -27,20 +27,10 @@ def objectTracking(filename):
             gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
             startYs, startXs = get_features(gray, bboxs)
             continue
-        #try:
         img1 = img2
         img2 = frame
         img2 = cv2.GaussianBlur(img2, (7, 7), 0)
-        # if frame_num%10 == 0:
-        #     gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-        #     startYs, startXs = get_features(gray, bboxs)
-        print('--------------')
-        print(startXs.shape)
-        print(startYs.shape)
         newXs, newYs = estimateAllTranslation(startXs, startYs, img1, img2)
-        print(newXs.shape)
-        print(newYs.shape)
-        print('--------------')
         startXs, startYs, bboxs = applyGeometricTransformation(startXs, startYs, newXs, newYs, bboxs)
 
         bb_img = frame
@@ -72,8 +62,4 @@ def objectTracking(filename):
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    # videos_dir = os.fsencode('videos')
-    # for file in os.listdir(videos_dir):
-    #     test_video = os.fsdecode(file)
-    #     objectTracking('videos/'+ test_video)
-    objectTracking('videos/Medium.mp4')
+    objectTracking('videos/Easy.mp4')

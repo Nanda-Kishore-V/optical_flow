@@ -7,18 +7,13 @@ def ransac(startXs, startYs, newXs, newYs, bbox):
     transformation = None
 
     N = startXs.shape[0]
-    print(startXs.shape)
-    print(startYs.shape)
     coords = np.block([[startXs.reshape(1,-1)], [startYs.reshape(1,-1)], [np.ones((1, N))]])
     src = np.stack((startXs, startYs), axis=-1)
-    print(newXs.shape)
-    print(newYs.shape)
     dst = np.stack((newXs, newYs), axis=-1)
 
     thresh = 1
 
     for _ in range(100):
-        # indices = np.random.randint(0, N, size=3)
         if N < 3:
             print('No points to perform RANSAC on.')
             return newXs, newYs, bbox
