@@ -7,10 +7,12 @@ def ransac(startXs, startYs, newXs, newYs, bbox):
     transformation = None
 
     N = startXs.shape[0]
-    print(startXs.shape[0])
-    print(startYs.shape[0])
+    print(startXs.shape)
+    print(startYs.shape)
     coords = np.block([[startXs.reshape(1,-1)], [startYs.reshape(1,-1)], [np.ones((1, N))]])
     src = np.stack((startXs, startYs), axis=-1)
+    print(newXs.shape)
+    print(newYs.shape)
     dst = np.stack((newXs, newYs), axis=-1)
 
     thresh = 1
@@ -33,11 +35,6 @@ def ransac(startXs, startYs, newXs, newYs, bbox):
         Ys = new_coords[1,:]
 
         errors = np.sqrt(np.sum((np.transpose(dst) - np.block([[Xs], [Ys]]))**2, axis=0))
-        # if np.isnan(errors).any():
-            # print(indices)
-            # print(src_i)
-            # print(dst_i)
-            # print(errors)
         inliers = errors[errors < thresh].size
         if max_inliers < inliers:
             max_inliers = inliers

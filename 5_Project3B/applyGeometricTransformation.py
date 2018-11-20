@@ -10,13 +10,13 @@ def applyGeometricTransformation(startXs, startYs, newXs, newYs, bbox):
     Xs = -np.ones((N, F))
     Ys = -np.ones((N, F))
     newbbox = np.empty((F, 4, 2))
-    #print(startXs)
-    #print(newXs)
     for i in range(F):
-        mod_startX = startXs[:,i][startXs[:,i] >= 0]
-        mod_startY = startYs[:,i][startYs[:,i] >= 0]
-        mod_newX = newXs[:,i][newXs[:,i] >= 0]
-        mod_newY = newYs[:,i][newYs[:,i] >= 0]
+        mask = np.logical_or(startXs[:,i] >= 0, startYs[:,i]>=0)
+        mod_startX = startXs[:,i][mask]
+        mod_startY = startYs[:,i][mask]
+        mask = np.logical_or(newXs[:,i] >= 0, newYs[:,i] >= 0)
+        mod_newX = newXs[:,i][mask]
+        mod_newY = newYs[:,i][mask]
         x, y, newbbox[i,:,:] = ransac(mod_startX, mod_startY, mod_newX, mod_newY, bbox[i,:])
         Xs[:x.size, i], Ys[:y.size, i] = x, y
         '''
