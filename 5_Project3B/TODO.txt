@@ -1,4 +1,0 @@
-Things to do:
-* When features go out of the frame, the bounding box stays.  
-* Affine warp
-
